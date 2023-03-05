@@ -14,7 +14,7 @@ const port = 8765;
 
 const provider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_SEPOLIA_RPC_URL);
 dotenv.config();
-const pinata = new PinataSDK(process.env.REACT_APP_PINATA_API_KEY, process.env.REACT_APP_PINATA_SECRET_KEY);
+const pinata = new PinataSDK(process.env.REACT_APP_PINATA_API_KEY, process.env.REACT_APP_PINATA_API_SECRET);
 const privateKey = process.env.REACT_APP_PRIVATE_KEY;
 
 const signData = async (dataToSign, privateKey) => {
