@@ -10,6 +10,7 @@ REACT_APP_ETHERSCAN_API_KEY=""
 REACT_APP_PINATA_API_KEY=""
 REACT_APP_PINATA_API_SECRET=""
 REACT_APP_PRIVATE_KEY=""
+REACT_APP_IPFS_GATEWAY_BASE_URI="https://cloudflare-ipfs.com/ipfs/"
 ```
 
 - Install packages
@@ -21,6 +22,7 @@ npm install
 ```
 npx hardhat compile
 npx hardhat run scripts/deploy.js --network sepolia
+cp -f artifacts/contracts/RandomNFT.sol/RandomNFT.json src/RandomNFT.json
 ```
 
 - Run

@@ -16,16 +16,17 @@ const provider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_SEPO
 dotenv.config();
 const pinata = new PinataSDK(process.env.REACT_APP_PINATA_API_KEY, process.env.REACT_APP_PINATA_API_SECRET);
 const privateKey = process.env.REACT_APP_PRIVATE_KEY;
+const baseUri = process.env.REACT_APP_IPFS_GATEWAY_BASE_URI;
 
 const signData = async (dataToSign, privateKey) => {
     const wallet = new ethers.Wallet(privateKey, provider);
     console.log("address: " + wallet.address);
-    const messageHash = ethers.utils.hashMessage(dataToSign);
+    const dataHash = ethers.utils.hashMessage(dataToSign);
 
-    const signature = await wallet.signMessage(ethers.utils.arrayify(messageHash));
-    console.log("hash: " + messageHash);
+    const signature = await wallet.signMessage(ethers.utils.arrayify(dataHash));
+    console.log("hash: " + dataHash);
     console.log("signature: " + signature);
-    return { messageHash, signature };
+    return { dataHash, signature };
 };
 
 const app = express();
@@ -54,10 +55,21 @@ app.use('/generate-image', async (req, res, next) => {
             }
         };
         const stream = Readable.from(imageData)
-        const { IpfsHash, PinSize, Timestamp } = await pinata.pinFileToIPFS(stream, options);
+        const { IpfsHash } = await pinata.pinFileToIPFS(stream, options);
         console.log(`Uploaded image to IPFS with hash ${IpfsHash}`);
-        const { messageHash, signature } = await signData(IpfsHash, privateKey);
-        res.json({ ipfsHash: IpfsHash, ipfsHashHash:messageHash, signature });
+        const metadata = {
+            name: 'Random NFT',
+            description: 'This is a random NFT!',
+            image: `${baseUri}${IpfsHash}`,
+            "attributes": [{
+                "trait_type": "Level",
+                "value": Math.ceil(Math.random() * 10)
+            }]
+        };
+        const result = await pinata.pinJSONToIPFS(metadata, options);
+        const cid = result.IpfsHash;
+        const { dataHash, signature } = await signData(cid, privateKey);
+        res.json({ cid, cidHash: dataHash, signature });
     } catch (err) {
         console.log(err);
     }
@@ -75,5 +87,5 @@ app.use('^/$', (req, res, next) => {
 
 app.use(express.static(path.resolve(__dirname, '..', 'build')));
 app.listen(port, () => {
-    console.log(`open http://localhost:${port}`);
+    console.log(`Open http://localhost:${port}`);
 });
