@@ -15,10 +15,11 @@ contract RandomNFT is ERC721, Ownable {
     mapping(uint256 => string) private tokenCid;
     mapping(string => uint256) private cidToken;
 
-    event Mint(address indexed owner, uint256 indexed tokenId, string metadata);
-    event Withdraw(address indexed owner, uint256 amount);
+    event Mint(address indexed account, uint256 indexed tokenId, string metadata);
+    event Withdraw(address indexed account, uint256 amount);
 
     constructor() payable ERC721("RandomNFT", "RD") {
+        require(msg.sender == tx.origin, "Only externally owned accounts can create this contract.");
         mintPrice = 0.001 ether;
         totalSupply = 0;
         maxSupply = 1000;
@@ -41,10 +42,7 @@ contract RandomNFT is ERC721, Ownable {
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "Balance is zero");
-
-        (bool success, ) = owner().call{value: balance}("");
-        require(success, "Transfer failed");
-
+        payable(owner()).transfer(balance);
         emit Withdraw(owner(), balance);
     }
 
@@ -61,9 +59,7 @@ contract RandomNFT is ERC721, Ownable {
             ECDSA.toEthSignedMessageHash(cidHash),
             signature
         );
-
         require(signer == owner(), "Invalid signature");
-
         totalSupply++;
         uint256 tokenId = totalSupply;
         console.log("%s", tokenId);

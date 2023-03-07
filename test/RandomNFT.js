@@ -129,6 +129,7 @@ describe("RandomNFT", function () {
       const { randomNFT } = await loadFixture(
         deployRandomNFTFixture
       );
+      console.log("NFT address: %s", randomNFT.address);
       const msg = "abc";
       const [owner, otherAccount] = await ethers.getSigners();
       const messageHash = ethers.utils.hashMessage(msg);
