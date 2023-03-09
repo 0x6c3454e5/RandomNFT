@@ -12,11 +12,11 @@ const { Readable } = require('stream');
 
 const port = 8765;
 
-const provider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_SEPOLIA_RPC_URL);
+const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 dotenv.config();
-const pinata = new PinataSDK(process.env.REACT_APP_PINATA_API_KEY, process.env.REACT_APP_PINATA_API_SECRET);
-const privateKey = process.env.REACT_APP_PRIVATE_KEY;
-const baseUri = process.env.REACT_APP_IPFS_GATEWAY_BASE_URI;
+const pinata = new PinataSDK(process.env.PINATA_API_KEY, process.env.PINATA_API_SECRET);
+const privateKey = process.env.PRIVATE_KEY;
+const baseUri = process.env.IPFS_GATEWAY_BASE_URI;
 
 const signData = async (dataToSign, privateKey) => {
     const wallet = new ethers.Wallet(privateKey, provider);

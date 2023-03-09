@@ -95,7 +95,7 @@ describe("RandomNFT", function () {
       await randomNFT.connect(otherAccount).mint(
         msg, messageHash,
         signature, {
-        value: ethers.utils.parseEther((0.01).toString()), gasLimit: 1000000
+        value: ethers.utils.parseEther((0.001).toString()), gasLimit: 1000000
       });
       await expect(randomNFT.connect(otherAccount).mint(
         msg, messageHash,

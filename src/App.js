@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers'
 import randomNFT from './RandomNFT.json'
 
-const randomNFTAddress = "REPLACE_WITH_THE_CONTRACT_ADDRESS";
+const randomNFTAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 function App() {
 
@@ -23,10 +23,12 @@ function App() {
       signer
     );
     setContract(contract);
-    contract.on("Mint", (owner, tokenId, metadata, event) => {
+    contract.on("Mint", (account, tokenId, metadata, event) => {
       setMetadataUrl(metadata);
       setText(`Congrats, RandomNFT #${tokenId} is yours.`);
     });
+
+    connectAccount();
 
     return () => {
       contract.removeAllListeners();
@@ -44,19 +46,14 @@ function App() {
   const mintNFT = async (event) => {
     setText("Minting, please wait a minute");
     setMetadataUrl('');
-    const response = await fetch("/generate-image", {
-      method: "GET",
-      headers: {
-        "Content-Type": "text/json",
-      },
-    });
+    const response = await fetch("/generate-image");
     const { cid, cidHash, signature } = await response.json();
 
     try {
       const response = await contract.mint(
         cid, cidHash,
         signature, {
-        value: ethers.utils.parseEther((0.01).toString()), gasLimit: 1000000
+        value: ethers.utils.parseEther((0.001).toString()), gasLimit: 1000000
       });
       console.log(response);
     } catch (err) {
@@ -73,9 +70,9 @@ function App() {
             <div>{text}</div>
             {metadataUrl ? (<a target='_blank' href={metadataUrl}>Check your NFT</a>) : null}
           </div>
-        ) : (
-          <button onClick={connectAccount}>Connect to wallet</button>
-        )}
+        ) : 
+          null
+        }
 
       </header>
     </div>

@@ -5,12 +5,13 @@ Generate a random image, upload it to IPFS, and mint an NFT with just one click.
 
 - Obtain RPC url, etherscan api key, pinata api key, and pinata api secret from infura.io, etherscan.io, and pinata.cloud, and create an .env file in the project root directory.
 ```
-REACT_APP_SEPOLIA_RPC_URL=""
-REACT_APP_ETHERSCAN_API_KEY=""
-REACT_APP_PINATA_API_KEY=""
-REACT_APP_PINATA_API_SECRET=""
-REACT_APP_PRIVATE_KEY=""
-REACT_APP_IPFS_GATEWAY_BASE_URI="https://cloudflare-ipfs.com/ipfs/"
+RPC_URL=""
+ETHERSCAN_API_KEY=""
+PINATA_API_KEY=""
+PINATA_API_SECRET=""
+PRIVATE_KEY=""
+IPFS_GATEWAY_BASE_URI="https://cloudflare-ipfs.com/ipfs/"
+REACT_APP_CONTRACT_ADDRESS=""
 ```
 
 - Install packages
@@ -21,7 +22,7 @@ npm install
 - Create NFT constract
 ```
 npx hardhat compile
-npx hardhat run scripts/deploy.js --network sepolia
+npx hardhat run scripts/deploy.js --network testnet
 cp -f artifacts/contracts/RandomNFT.sol/RandomNFT.json src/RandomNFT.json
 ```
 

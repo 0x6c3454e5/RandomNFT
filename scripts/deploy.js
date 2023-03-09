@@ -2,7 +2,7 @@ const hre = require("hardhat");
 const fs = require('fs');
 const path = require('path');
 
-const appfile = path.join(__dirname, '../src/App.js');
+const appfile = path.join(__dirname, '../.env');
 
 function replaceAddress(address) {
 
@@ -12,8 +12,8 @@ function replaceAddress(address) {
       console.log(err);
       return;
     }
-    const regex = /const\s+randomNFTAddress\s+=\s+"([0-9a-zA-Z_]*)"/g;
-    const replacement = `const randomNFTAddress = "${address}"`;
+    const regex = /REACT_APP_CONTRACT_ADDRESS="([0-9a-zA-Z_]*)"/g;
+    const replacement = `REACT_APP_CONTRACT_ADDRESS="${address}"`;
     const result = data.replace(regex, replacement);
   
     fs.writeFile(appfile, result, 'utf8', function (err) {
